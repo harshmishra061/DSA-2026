@@ -14,3 +14,25 @@ public:
         return res;
     }
 };
+
+// Other method - common - is used in both preorder and inorder
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        if(root == NULL) return {};
+        vector<int> res;
+        stack<TreeNode*> st;
+        TreeNode* node = root;
+        while(node != NULL || !st.empty()) {
+            if(node != NULL) {
+                res.push_back(node->val);
+                st.push(node);
+                node = node->left;
+            } else {
+                node = st.top(); st.pop();
+                node = node->right;
+            }
+        }
+        return res;
+    }
+};
