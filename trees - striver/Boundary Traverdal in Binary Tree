@@ -1,0 +1,49 @@
+class Solution {
+    void findLeaf(Node* node, vector<int>& leafNodes) {
+        // preorder
+        if(node == NULL) return;
+        if(node->left == NULL && node->right == NULL) leafNodes.push_back(node->data);
+        findLeaf(node->left, leafNodes);
+        findLeaf(node->right, leafNodes);
+    }
+  public:
+    vector<int> boundaryTraversal(Node *root) {
+        vector<int> leftBoundaryWithoutLeaf, rightBoundaryWithoutLeaf, leafNodes;
+        Node* node = root->left;
+        if(node != NULL) {
+            while(node->left != NULL || node->right != NULL) {
+                leftBoundaryWithoutLeaf.push_back(node->data);
+                if(node->left != NULL) {
+                    node = node->left;
+                } else {
+                    node = node->right;
+                }
+            }
+        }
+        
+        node = root->right;
+        
+        if(node != NULL) {
+            while(node->left != NULL || node->right != NULL) {
+                rightBoundaryWithoutLeaf.push_back(node->data);
+                if(node->right != NULL) {
+                    node = node->right;
+                } else {
+                    node = node->left;
+                }
+            }
+        }
+        
+        findLeaf(root->left, leafNodes);
+        findLeaf(root->right, leafNodes);
+        
+        vector<int> res{root->data};
+        res.insert(res.end(), leftBoundaryWithoutLeaf.begin(), leftBoundaryWithoutLeaf.end());
+        res.insert(res.end(), leafNodes.begin(), leafNodes.end());
+        res.insert(res.end(), rightBoundaryWithoutLeaf.rbegin(), rightBoundaryWithoutLeaf.rend());
+        
+        return res;
+        
+        
+    }
+};
