@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        TreeNode* currNode = root;
+        vector<int> res;
+        while(currNode != NULL) {
+            if(currNode->left != NULL) {
+                TreeNode* lastNode = currNode->left;
+                while(lastNode->right != NULL && lastNode->right != currNode) lastNode = lastNode->right;
+                if(lastNode->right == NULL) { // left subtree not yet executed
+                    lastNode->right = currNode;
+                    currNode = currNode->left;
+                } else {
+                    res.push_back(currNode->val);
+                    lastNode->right = NULL;
+                    currNode = currNode->right;
+                }
+            } else {
+                res.push_back(currNode->val);
+                currNode = currNode->right;
+            }
+        }
+        return res;
+    }
+};
