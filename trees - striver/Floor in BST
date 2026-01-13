@@ -1,0 +1,35 @@
+//C++
+class Solution {
+  public:
+    int floor(Node* root, int x) {
+        int res = -1;
+        while(root != NULL) {
+            if(root->data == x) return root->data;
+            else if(x < root->data) {
+                root = root->left;
+            } else {
+                res = root->data;
+                root = root->right;
+            }
+        }
+        return res;
+    }
+};
+
+// JAVA
+class Solution {
+    public static int floor(Node root, int x) {
+        int res = -1;
+        while(root != null) {
+            if(root.data == x) {
+                return root.data;
+            } else if(x < root.data) {
+                root = root.left;
+            } else {
+                res = root.data;
+                root = root.right;
+            }
+        }
+        return res;
+    }
+}
