@@ -1,0 +1,33 @@
+//C++
+class Solution {
+  public:
+    int findCeil(Node* root, int x) {
+        int res = -1;
+        while(root != NULL) {
+            if(root->data == x) {
+                return x;
+            } else if(x < root->data) {
+                res = root->data;
+                root = root->left;
+            } else {
+                root = root->right;
+            }
+        }
+        return res;
+    }
+};
+
+//JAVA
+class Solution {
+    int findCeil(Node root, int x) {
+        int res = -1;
+        while(root != null) {
+            if(root.data == x) return x;
+            else if(x < root.data) {
+                res = root.data;
+                root = root.left;
+            } else root = root.right;
+        }
+        return res;
+    }
+}
