@@ -1,0 +1,15 @@
+class Solution {
+    void inorder(Node* node, int k, int& count, int& res) {
+        if(node == NULL || count >= k) return;
+        inorder(node->right, k, count, res);
+        count++;
+        if(count == k) res = node->data;
+        inorder(node->left, k, count, res);
+    }
+  public:
+    int kthLargest(Node *root, int k) {
+        int res = -1, count = 0;
+        inorder(root, k, count, res);
+        return res;
+    }
+};
