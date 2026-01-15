@@ -1,0 +1,22 @@
+class Solution {
+    string minCameraCover2(TreeNode* root, int& cameraCount) {
+        if(root == NULL) return "protected";
+        string left = minCameraCover2(root->left, cameraCount);
+        string right = minCameraCover2(root->right, cameraCount);
+
+        if(left == "not_protected" || right == "not_protected") {
+            cameraCount++;
+            return "have_camera";
+        }
+        if(left == "have_camera" || right == "have_camera") return "protected";
+        return "not_protected";
+
+    }
+public:
+    int minCameraCover(TreeNode* root) {
+       int cameraCount = 0;
+       string status = minCameraCover2(root, cameraCount);
+       if(status == "not_protected") cameraCount++;
+       return cameraCount;
+    }
+};
