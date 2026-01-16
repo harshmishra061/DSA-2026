@@ -1,0 +1,42 @@
+// Using BST Iterator
+class BSTIterator {
+    private: 
+    stack<TreeNode*> st;
+    bool reverse;
+    public: 
+    BSTIterator(TreeNode* root, bool isReversed) {
+        reverse = isReversed;
+        while(root != NULL) {
+            st.push(root);
+            root = !reverse ? root->left : root->right;
+        }
+    }
+
+    int next() {
+        TreeNode* node = st.top(); st.pop();
+        int res = node->val;
+        node = !reverse ? node->right : node->left;
+        while(node != NULL) {
+            st.push(node);
+            node = !reverse ? node->left : node->right;
+        }
+        return res;
+    }
+
+};
+
+class Solution {
+public:
+    bool findTarget(TreeNode* root, int k) {
+        BSTIterator lItr = BSTIterator(root, false);
+        BSTIterator rItr = BSTIterator(root, true);
+
+        int leftVal = lItr.next(), rightVal = rItr.next();
+        while(leftVal < rightVal) {
+            if(leftVal + rightVal == k) return true;
+            else if(leftVal + rightVal < k) leftVal = lItr.next();
+            else rightVal = rItr.next();
+        }
+        return false;
+    }
+};
