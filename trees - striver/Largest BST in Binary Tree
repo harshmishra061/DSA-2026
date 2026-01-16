@@ -1,0 +1,19 @@
+class Solution {
+    pair<int, pair<int, int>> largestBst2(Node* node) {
+        if(node == NULL) return {0, {INT_MAX, INT_MIN}}; // node_count, min_value_in_subtree, max_value_in_subtree
+        
+        pair<int, pair<int, int>> left = largestBst2(node->left);
+        pair<int, pair<int, int>> right = largestBst2(node->right);
+        
+        if(left.second.second < node->data && node->data < right.second.first) {
+            return {left.first + right.first + 1, {min(node->data, left.second.first), max(node->data, right.second.second)}};
+        }
+        
+        return {max(left.first, right.first), {INT_MIN, INT_MAX}};
+    }
+  public:
+    int largestBst(Node *root) {
+        pair<int, pair<int, int>> res = largestBst2(root);
+        return res.first;
+    }
+};
