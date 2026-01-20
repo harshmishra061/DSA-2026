@@ -65,3 +65,39 @@ public:
         return res;
     }
 };
+
+
+// Using 1D dir array
+class Solution {
+    vector<int> dir;
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        dir = {0, 1, 0, -1, 0};
+        int res = 0, m = grid.size(), n = grid[0].size();
+        vector<vector<bool>> vis(m, vector<bool>(n, false));
+
+        for(int i = 0;i < m;i++) {
+            for(int j = 0;j < n;j++) {
+                if(grid[i][j] == '0' || vis[i][j]) continue;
+                res++;
+                queue<pair<int, int>> q;
+                q.push({i, j});
+                vis[i][j] = true;
+                while(!q.empty()) {
+                    int nodei = q.front().first;
+                    int nodej = q.front().second; q.pop();
+                    for(int k = 0;k < 4;k++) {
+                        int newi = nodei + dir[k];
+                        int newj = nodej + dir[k + 1];
+
+                        if(newi >= 0 && newi < m && newj >= 0 && newj < n && grid[newi][newj] == '1' && vis[newi][newj] == false) {
+                            vis[newi][newj] = true;
+                            q.push({newi, newj});
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};
