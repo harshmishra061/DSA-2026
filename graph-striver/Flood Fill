@@ -1,0 +1,57 @@
+// BFS
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        int n = image.size();
+        int m = image[0].size();
+        vector<int> dir{{-1, 0, 1, 0, -1}};
+        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        queue<pair<int, int>> q;
+        q.push({sr, sc});
+        vis[sr][sc] = true;
+        
+        while(!q.empty()) {
+            int i = q.front().first;
+            int j = q.front().second; q.pop();
+
+            for(int k = 0;k < 4;k++) {
+                int newi = i + dir[k];
+                int newj = j + dir[k + 1];
+                if(newi >= 0 && newi < n && newj >= 0 && newj < m && vis[newi][newj] == false && image[i][j] == image[newi][newj]) {
+                    vis[newi][newj] = true;
+                    q.push({newi, newj});
+                }
+            }
+
+            image[i][j] = color;
+
+        }
+
+        return image;
+    }
+};
+
+// DFS
+class Solution {
+    void dfs(int i, int j, vector<vector<int>>& image, int& color, vector<int>& dir, vector<vector<bool>>& vis) {
+        vis[i][j] = true;
+        for(int k = 0;k < 4;k++) {
+            int newi = i + dir[k];
+            int newj = j + dir[k + 1];
+
+            if(newi >= 0 && newi < image.size() && newj >= 0 && newj < image[0].size() && vis[newi][newj] == false && image[i][j] == image[newi][newj]) {
+                dfs(newi, newj, image, color, dir, vis);
+            }
+        }
+        image[i][j] = color;
+    }
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        int n = image.size();
+        int m = image[0].size();
+        vector<int> dir{{-1, 0, 1, 0, -1}};
+        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        dfs(sr, sc, image, color, dir, vis);
+        return image;
+    }
+};
