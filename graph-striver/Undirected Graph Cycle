@@ -1,0 +1,66 @@
+// DFS
+class Solution {
+    bool isCyclic(int node, int par, vector<bool>& vis, vector<vector<int>>& adj) {
+        vis[node] = true;
+        for(auto nbr : adj[node]) {
+            if(!vis[nbr]) {
+                if(isCyclic(nbr, node, vis, adj)) return true;
+            } else if(nbr != par) {
+                return true;
+            }
+        }
+    }
+  public:
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(V);
+        for(auto edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        vector<bool> vis(V);
+        for(int i = 0;i < V;i++) {
+            if(!vis[i]) {
+                if(isCyclic(i, -1, vis, adj)) return true;
+            }
+        }
+        return false;
+    }
+};
+
+// BFS
+class Solution {
+    bool isCyclicBFS(int start_node, vector<bool> vis, vector<vector<int>>& adj) {
+        queue<pair<int, int>> q;
+        q.push({start_node, -1});
+        vis[start_node] = true;
+        while(!q.empty()) {
+            int node = q.front().first;
+            int par = q.front().second; q.pop();
+            
+            for(auto nbr : adj[node]) {
+                if(!vis[nbr]) {
+                    vis[nbr] = true;
+                    q.push({nbr, node});
+                } else if(nbr != par) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+  public:
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(V);
+        for(auto edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        vector<bool> vis(V);
+        for(int i = 0;i < V;i++) {
+            if(!vis[i]) {
+                if(isCyclicBFS(i, vis, adj)) return true;
+            }
+        }
+        return false;
+    }
+};
