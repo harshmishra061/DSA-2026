@@ -1,0 +1,37 @@
+class Solution {
+  public:
+    vector<vector<int>> nearest(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        vector<vector<int>> res(n, vector<int>(m, INT_MAX));
+        
+        queue<pair<int, int>> q;
+        for(int i = 0;i < n;i++) {
+            for(int j = 0;j < m;j++) {
+                if(grid[i][j] == 1) {
+                    res[i][j] = 0;
+                    q.push({i, j});
+                }
+            }
+        }
+        
+        vector<int> dir{-1, 0, 1, 0, -1};
+        
+        while(!q.empty()) {
+            int i = q.front().first; 
+            int j = q.front().second; q.pop();
+            
+            for(int k = 0;k < 4;k++) {
+                int newi = i + dir[k];
+                int newj = j + dir[k + 1];
+                
+                if(newi >= 0 && newi < n && newj >= 0 && newj < m && res[i][j] + 1 < res[newi][newj]) {
+                    res[newi][newj] = res[i][j] + 1;
+                    q.push({newi, newj});
+                }
+            }
+        }
+        
+        return res;
+        
+    }
+};
