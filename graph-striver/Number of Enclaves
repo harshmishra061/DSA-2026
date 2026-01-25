@@ -1,0 +1,39 @@
+class Solution {
+    vector<int> dir;
+    void dfs(int i, int j, vector<vector<int>>& grid, vector<vector<bool>>& vis, int& count) {
+        vis[i][j] = true;
+        count++;
+        
+        for(int k = 0;k < 4;k++) {
+            int newi = i + dir[k];
+            int newj = j + dir[k + 1];
+            
+            if(newi >= 0 && newi < grid.size() && newj >= 0 && newj < grid[0].size() && grid[newi][newj] == 1 && vis[newi][newj] == false) {
+                dfs(newi, newj, grid, vis, count);
+            }
+        }
+    }
+  public:
+    int numberOfEnclaves(vector<vector<int>> &grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        
+        int totalOnes = 0;
+        int onesConnectedWithBoundary = 0;
+        
+        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        dir = {1, 0, -1, 0, 1};
+        
+        for(int i = 0;i < n;i++) {
+            for(int j = 0;j < m;j++) {
+                totalOnes += grid[i][j] == 1;
+                
+                if((i == 0 || j == 0 || i == n - 1 || j == m - 1) && grid[i][j] == 1 && vis[i][j] == false) {
+                    dfs(i, j, grid, vis, onesConnectedWithBoundary);
+                }
+            }
+        }
+        
+        return totalOnes - onesConnectedWithBoundary;
+    }
+};
