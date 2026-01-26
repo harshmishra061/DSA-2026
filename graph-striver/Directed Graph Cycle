@@ -1,0 +1,66 @@
+class Solution {
+    bool checkCycle(int node, vector<vector<int>>& adj, vector<bool>& active, vector<bool>& vis) {
+        active[node] = true;
+        
+        for(auto nbr : adj[node]) {
+            if(active[nbr]) return true;
+            else if(!vis[nbr]) if(checkCycle(nbr, adj, active, vis) == true) return true;
+        }
+        
+        active[node] = false;
+        vis[node] = true;
+        
+        return false;
+    }
+  public:
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        vector<vector<int>> adj(V);
+        for(auto edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+        }
+        
+        vector<bool> active(V, false);
+        vector<bool> vis(V, false);
+        
+        for(int i = 0;i < V;i++) {
+            if(!vis[i]) {
+                if(checkCycle(i, adj, active, vis) == true) return true; 
+            }
+        }
+        
+        return false;
+    }
+};
+
+// Using only visited
+class Solution {
+    bool checkCycle(int node, vector<vector<int>>& adj, vector<int>& vis) {
+        vis[node] = 1; // active
+        
+        for(auto nbr : adj[node]) {
+            if(vis[nbr] == 1) return true;
+            else if(vis[nbr] == 0) if(checkCycle(nbr, adj, vis) == true) return true;
+        }
+        
+        vis[node] = 2;
+        
+        return false;
+    }
+  public:
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        vector<vector<int>> adj(V);
+        for(auto edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+        }
+        
+        vector<int> vis(V, 0); // 0 -> not yet visited, 1 -> active, 2 -> visited
+        
+        for(int i = 0;i < V;i++) {
+            if(vis[i] == 0) {
+                if(checkCycle(i, adj, vis) == true) return true; 
+            }
+        }
+        
+        return false;
+    }
+};
