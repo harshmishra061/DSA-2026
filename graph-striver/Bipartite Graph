@@ -1,0 +1,60 @@
+// DFS
+class Solution {
+    bool canColorWith2(int node, int colorToUse, vector<vector<int>>& adj, vector<bool>& vis, vector<int>& color) {
+        vis[node] = true;
+        color[node] = colorToUse;
+        
+        for(auto nbr : adj[node]) {
+            if(!vis[nbr]) {
+                if(canColorWith2(nbr, !colorToUse, adj, vis, color) == false) return false; 
+            } else if(color[node] == color[nbr]) return false;
+        }
+        
+        return true;
+    }
+  public:
+    bool isBipartite(int V, vector<vector<int>> &edges) {
+        vector<vector<int>> adj(V);
+        for(auto edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        vector<int> color(V, -1);
+        vector<bool> vis(V, false);
+        return canColorWith2(0, 0, adj, vis, color);
+    }
+};
+
+
+// BFS
+class Solution {
+  public:
+    bool isBipartite(int V, vector<vector<int>> &edges) {
+        vector<vector<int>> adj(V);
+        for(auto edge : edges) {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        vector<int> color(V, -1);
+        vector<bool> vis(V, false);
+        
+        queue<int> q;
+        q.push(0);
+        vis[0] = true;
+        color[0] = 0;
+        
+        while(!q.empty()) {
+            int node = q.front(); q.pop();
+            
+            for(auto nbr : adj[node]) {
+                if(!vis[nbr]) {
+                    vis[nbr] = true;
+                    color[nbr] = !color[node];
+                    q.push(nbr);
+                } else if(color[nbr] == color[node]) return false;
+            }
+        }
+        
+        return true;
+    }
+};
