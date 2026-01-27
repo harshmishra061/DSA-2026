@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    vector<int> safeNodes(int V, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(V);
+        vector<int> indegree(V, 0);
+        for(auto edge : edges) {
+            adj[edge[1]].push_back(edge[0]);
+            indegree[edge[0]]++;
+        }
+        
+        queue<int> q;
+        vector<int> res;
+        
+        for(int i = 0;i < V;i++) {
+            if(indegree[i] == 0) {
+                q.push(i);
+                res.push_back(i);
+            }
+        }
+        
+        while(!q.empty()) {
+            int node = q.front(); q.pop();
+            
+            for(auto nbr : adj[node]) {
+                indegree[nbr]--;
+                if(indegree[nbr] == 0) {
+                    q.push(nbr);
+                    res.push_back(nbr);
+                }
+            }
+        }
+        
+        return res;
+        
+    }
+};
