@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    string findOrder(vector<string> &words) {
+        int n = words.size();
+        vector<vector<int>> adj(26);
+        vector<int> indegree(26, 0);
+        set<int> s;
+        
+        for(int i = 0;i < n;i++) {
+            for(auto ch : words[i]) s.insert(ch - 'a');
+            int j = i + 1;
+            if(j < n) {
+                bool match = false;
+                // find the first non matching char
+                for(int k = 0;k < min(words[i].size(), words[j].size());k++) {
+                    if(words[i][k] != words[j][k]) {
+                        match = true;
+                        adj[words[i][k] - 'a'].push_back(words[j][k] - 'a');
+                        indegree[words[j][k] - 'a']++;
+                        break;
+                    }
+                }
+                if(!match && words[i].size() > words[j].size()) return "";
+            }
+        }
+        
+        queue<int> q;
+        for(int i = 0;i < 26;i++) {
+            if(s.count(i) && indegree[i] == 0) q.push(i);
+        }
+        
+        string res = "";
+        
+        while(!q.empty()) {
+            int node = q.front(); q.pop();
+            res += ('a' + node);
+            for(auto nbr : adj[node]) {
+                indegree[nbr]--;
+                if(indegree[nbr] == 0) q.push(nbr);
+            }
+        }
+        
+        return res.size() == s.size() ? res : "";
+        
+    }
+};
