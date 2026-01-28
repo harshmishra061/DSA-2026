@@ -1,0 +1,67 @@
+// the formed graph should be DAG - Toposort
+class Solution {
+public:
+    bool canFinish(int n, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> adj(n);
+        vector<int> indegree(n, 0);
+        for(auto it : prerequisites) {
+            adj[it[1]].push_back(it[0]);
+            indegree[it[0]]++;
+        }
+
+        queue<int> q;
+        for(int i = 0;i < n;i++) {
+            if(indegree[i] == 0) q.push(i);
+        }
+
+        int count = 0;
+
+        while(!q.empty()) {
+            int node = q.front(); q.pop();
+            count++;
+
+            for(auto nbr : adj[node]) {
+                indegree[nbr]--;
+                if(indegree[nbr] == 0) q.push(nbr);
+            }
+        }
+
+        return count == n;
+        
+    }
+};
+
+// If DAG - no cycle in directed graph
+class Solution {
+    bool checkCycle(int node, vector<vector<int>>& adj, vector<int>& vis) {
+        vis[node] = 1;
+
+        for(auto nbr : adj[node]) {
+            if(!vis[nbr]) {
+                if(checkCycle(nbr, adj, vis) == true) return true;
+            } else if(vis[nbr] == 1) {
+                return true;
+            }
+        }
+
+        vis[node] = 2;
+        return false;
+    }
+public:
+    bool canFinish(int n, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> adj(n);
+        for(auto it : prerequisites) {
+            adj[it[1]].push_back(it[0]);
+        }
+
+        // Cycle Detection in Directed Graph Using DFS
+        vector<int> vis(n, 0);
+        for(int i = 0;i < n;i++) {
+            if(!vis[i]) {
+                if(checkCycle(i, adj, vis) == true) return false;
+            }
+        }
+
+        return true;
+    }
+};
