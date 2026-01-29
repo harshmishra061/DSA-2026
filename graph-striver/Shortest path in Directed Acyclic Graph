@@ -1,0 +1,95 @@
+// Using Toposort
+// 1. Find Toposort
+// 2. Mark res[start_node] = 0
+// 3. Iterate on toposort array and update res array
+
+class Solution {
+    
+  public:
+    vector<int> shortestPath(int n, int E, vector<vector<int>>& edges) {
+        vector<vector<pair<int, int>>> adj(n);
+        for(auto edge : edges) {
+            adj[edge[0]].push_back({edge[1], edge[2]});
+        }
+        vector<int> indegree(n, 0);
+        for(int i = 0;i < n;i++) {
+            for(auto it : adj[i]) {
+                indegree[it.first]++;
+            }
+        }
+        
+        queue<int> q;
+        for(int i = 0;i < n;i++) {
+            if(indegree[i] == 0) q.push(i);
+        }
+        
+        vector<int> topo;
+        
+        while(!q.empty()) {
+            int node = q.front(); q.pop();
+            topo.push_back(node);
+            for(auto it : adj[node]) {
+                int nbr = it.first;
+                indegree[nbr]--;
+                if(indegree[nbr] == 0) q.push(nbr);
+            }
+        }
+        
+        vector<int> res(n, INT_MAX);
+        res[0] = 0;
+        
+        for(int i = 0;i < n;i++) {
+            int node = topo[i];
+            
+            if(res[node] == INT_MAX) continue;
+            
+            for(auto it : adj[node]) {
+                int nbr = it.first;
+                int wt = it.second;
+                if(res[node] + wt < res[nbr]) res[nbr] = res[node] + wt;
+            }
+        }
+        
+        for(auto& it : res) if(it == INT_MAX) it = -1;
+        
+        return res;
+    }
+};
+
+
+// Dijkastra Algorithm
+class Solution {
+  public:
+    vector<int> shortestPath(int n, int E, vector<vector<int>>& edges) {
+        vector<vector<pair<int, int>>> adj(n);
+        for(auto edge : edges) {
+            adj[edge[0]].push_back({edge[1], edge[2]});
+        }
+        
+        vector<int> res(n, INT_MAX);
+        
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        pq.push({0, 0});
+        res[0] = 0;
+        
+        while(!pq.empty()) {
+            int weight = pq.top().first;
+            int node = pq.top().second; pq.pop();
+            
+            if(res[node] == weight) {
+                for(auto it : adj[node]) {
+                    int nbr = it.first;
+                    int nbrWt = it.second;
+                    if(weight + nbrWt < res[nbr]) {
+                        pq.push({weight + nbrWt, nbr});
+                        res[nbr] = weight + nbrWt;
+                    }
+                }
+            }
+        }
+        
+        for(auto& it : res) if(it == INT_MAX) it = -1;
+        
+        return res;
+    }
+};
