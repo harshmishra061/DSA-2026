@@ -1,0 +1,33 @@
+// Simple BFS
+class Solution {
+  public:
+    int shortestPath(vector<vector<int>> &grid, pair<int, int> source, pair<int, int> destination) {
+        if(grid[source.first][source.second] == 0 || grid[destination.first][destination.second] == 0) return -1;
+        
+        int n = grid.size(), m = grid[0].size();
+        vector<int> dir = {0, 1, 0, -1, 0};
+        queue<pair<int, int>> q;
+        vector<vector<int>> dis(n, vector<int>(m, INT_MAX));
+        q.push({source.first, source.second});
+        dis[source.first][source.second] = 0;
+        
+        while(!q.empty()) {
+            int i = q.front().first;
+            int j = q.front().second; q.pop();
+            
+            if(i == destination.first && j == destination.second) return dis[i][j];
+            
+            for(int k = 0;k < 4;k++) {
+                int newi = i + dir[k];
+                int newj = j + dir[k + 1];
+                
+                if(newi >= 0 && newi < n && newj >= 0 && newj < m && grid[newi][newj] == 1 && dis[newi][newj] == INT_MAX) { // If nbr has value 1 and approached first time
+                    dis[newi][newj] = 1 + dis[i][j];
+                    q.push({newi, newj});
+                }
+            }
+        }
+
+        return -1;
+    }
+};
