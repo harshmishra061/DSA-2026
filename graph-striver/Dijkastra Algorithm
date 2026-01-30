@@ -1,0 +1,75 @@
+//Using Priority Queue
+class Solution {
+  public:
+    vector<int> dijkstra(int n, vector<vector<int>> &edges, int src) {
+        vector<vector<pair<int, int>>> adj(n);
+        for(auto edge : edges) {
+            int u = edge[0], v = edge[1], w = edge[2];
+            adj[u].push_back({v, w});
+            adj[v].push_back({u, w});
+        }
+        
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        vector<int> dis(n, INT_MAX);
+        
+        pq.push({0, src});
+        dis[src] = 0;
+        
+        while(!pq.empty()) {
+            int node = pq.top().second;
+            int wt = pq.top().first; pq.pop();
+            
+            if(dis[node] < wt) continue; // only execute below code for {mindis, node} 
+            
+            for(auto it : adj[node]) {
+                int nbr = it.first;
+                int w = it.second;
+                if(dis[node] + w < dis[nbr]) {
+                    dis[nbr] = dis[node] + w;
+                    pq.push({dis[nbr], nbr});
+                }
+            }
+        }
+        
+        return dis;
+        
+    }
+};
+
+// Using Set
+class Solution {
+  public:
+    vector<int> dijkstra(int n, vector<vector<int>> &edges, int src) {
+        vector<vector<pair<int, int>>> adj(n);
+        for(auto edge : edges) {
+            int u = edge[0], v = edge[1], w = edge[2];
+            adj[u].push_back({v, w});
+            adj[v].push_back({u, w});
+        }
+        
+        set<pair<int, int>> s;
+        vector<int> dis(n, INT_MAX);
+        
+        s.insert({0, src});
+        dis[src] = 0;
+        
+        while(!s.empty()) {
+            int node = (*s.begin()).second;
+            int wt = (*s.begin()).first; s.erase(s.begin());
+            for(auto it : adj[node]) {
+                int nbr = it.first;
+                int w = it.second;
+                if(dis[node] + w < dis[nbr]) {
+                    if(dis[nbr] != INT_MAX) { // someone else already have inserted {dis[nbr], nbr} into the set which is irrelevant
+                        s.erase({dis[nbr], nbr});
+                    }
+                    dis[nbr] = dis[node] + w;
+                    s.insert({dis[nbr], nbr});
+                }
+            }
+        }
+        
+        return dis;
+        
+    }
+};
