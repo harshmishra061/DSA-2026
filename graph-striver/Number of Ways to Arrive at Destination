@@ -1,0 +1,43 @@
+class Solution {
+  public:
+    int countPaths(int n, vector<vector<int>>& edges) {
+        vector<vector<pair<int,int>>> adj(n);
+        for(auto edge : edges) {
+            int u = edge[0], v = edge[1], t = edge[2];
+            adj[u].push_back({v, t});
+            adj[v].push_back({u, t});
+        }
+        
+        vector<int> dis(n, INT_MAX), ways(n, 0); // number of ways to read a node in shortest time
+        
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        
+        pq.push({0, 0});
+        dis[0] = 0;
+        ways[0] = 1;
+        
+        while(!pq.empty()) {
+            int t = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+            
+            if(t != dis[node]) continue;
+            
+            for(auto it : adj[node]) {
+                int nbr = it.first;
+                int nbrt = it.second;
+                
+                if(dis[node] + nbrt < dis[nbr]) {
+                    dis[nbr] = dis[node] + nbrt;
+                    pq.push({dis[nbr], nbr});
+                    ways[nbr] = ways[node];
+                } else if(dis[node] + nbrt == dis[nbr]) {
+                    ways[nbr] += ways[node];
+                }
+            }
+        }
+        
+        return ways[n - 1];
+        
+    }
+};
