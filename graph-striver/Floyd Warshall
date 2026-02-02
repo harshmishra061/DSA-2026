@@ -1,0 +1,15 @@
+class Solution {
+  public:
+    void floydWarshall(vector<vector<int>> &dis) {
+        int n = dis.size();    
+        for(int y = 0;y < n;y++) {
+            for(int x = 0;x < n;x++) {
+                for(int z = 0;z < n;z++) {
+                    if(dis[x][y] != 1e8 && dis[y][z] != 1e8 && dis[x][y] + dis[y][z] < dis[x][z]) {
+                        dis[x][z] = dis[x][y] + dis[y][z];
+                    }
+                }
+            }
+        }
+    }
+};
