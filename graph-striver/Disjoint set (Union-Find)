@@ -1,0 +1,13 @@
+int find(int par[], int x) {
+    if(par[x] == x) return x;
+    return par[x] = find(par, par[x]);
+}
+
+void unionSet(int par[], int x, int z) {
+    int parX = find(par, x);
+    int parZ = find(par, z);
+    
+    if(parX != parZ) { // merge possible
+        par[parX] = parZ;
+    }
+}
