@@ -1,0 +1,95 @@
+// Hashing and merging nodes - marking parent node
+class Solution {
+    int findPar(int x, map<int, int>& par) {
+        if(x == par[x]) return x;
+        return par[x] = findPar(par[x], par);
+    }
+
+    void merge(int x, int y, map<int, int>& par, map<int, int>& count) {
+        x = findPar(x, par);
+        y = findPar(y, par);
+
+        if(x != y) {
+            par[x] = y;
+            count[y] += count[x];
+        }
+    }
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        int COL = 100001;
+        map<int, int> par;
+        map<int, int> count;
+
+        for(int i = 0;i < stones.size();i++) {
+            int idx = stones[i][0] * COL + stones[i][1];
+            par[idx] = idx;
+            count[idx] = 1;
+
+            for(int j = 0;j < i;j++) {
+                if(stones[i][0] == stones[j][0] || stones[i][1] == stones[j][1]) {
+                    int idx2 = stones[j][0] * COL + stones[j][1];
+                    merge(idx, idx2, par, count);
+                }
+            }
+        }
+
+        int res = 0;
+        for(auto it : par) {
+            if(it.first == it.second) {
+                res += count[it.first] - 1;
+            }
+        }
+
+        return res;
+    }
+};
+
+
+// Treat each row / col a separate node and when a stone occur at r, c merge r with c
+class Solution {
+    int findPar(int x, vector<int>& par) {
+        if(x == par[x]) return x;
+        return par[x] = findPar(par[x], par);
+    }
+    
+    // total stones - connected components
+
+    void merge(int x, int y, vector<int>& par, vector<int>& count) {
+        x = findPar(x, par);
+        y = findPar(y, par);
+        if(x != y) {
+            par[x] = y;
+            count[y] += count[x];
+        }
+    }
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        int n = 0, m = 0;
+        for(auto stone : stones) {
+            n = max(n, stone[0] + 1);
+            m = max(m, stone[1] + 1);
+        }
+
+        vector<int> par(n + m);
+        vector<int> count(n + m);
+
+        for(int i = 0;i < n + m;i++) {
+            par[i] = i;
+            count[i] = 1;
+        }
+
+        for(auto stone : stones) {
+            merge(stone[0], n + stone[1], par, count);
+        }
+
+        int connectedComponents = 0;
+
+        for(int i = 0;i < n + m;i++) {
+            if(par[i] == i && count[i] > 1) {
+                connectedComponents++;
+            }
+        }
+
+        return stones.size() - connectedComponents;
+    }
+};
