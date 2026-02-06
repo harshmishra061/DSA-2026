@@ -1,0 +1,41 @@
+class Solution {
+    void dfs(int node, int par, vector<vector<int>>& adj, vector<int>& disc, vector<int>& low, int& time, vector<vector<int>>& res) {
+        time++;
+        disc[node] = low[node] = time;
+
+        for(auto nbr : adj[node]) {
+            if(nbr == par) continue;
+            if(disc[nbr] == -1) {
+                dfs(nbr, node, adj, disc, low, time, res);
+                low[node] = min(low[node], low[nbr]);
+                if(disc[node] < low[nbr]) {
+                    res.push_back({node, nbr});
+                }
+            } else {
+                low[node] = min(low[node], disc[nbr]);
+                // OR low[node] = min(low[node], low[nbr]); 
+                // This works because assume we are at P (disc = 10, low = 5)
+                // And DFS run for childred and a child reach node P
+                // Since in brides we not remove node. so we can say that the low(Child) = low(P)
+            }
+        }
+    }
+public:
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        vector<vector<int>> adj(n);
+        for(auto conn : connections) {
+            adj[conn[0]].push_back(conn[1]);
+            adj[conn[1]].push_back(conn[0]);
+        }
+
+        vector<int> disc(n, -1), low(n, -1);
+
+        int time = 0;
+        vector<vector<int>> res;
+
+        dfs(0, -1, adj, disc, low, time, res);
+
+        return res;
+        
+    }
+};
