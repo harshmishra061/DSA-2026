@@ -1,12 +1,13 @@
 // Recursive
+// Number of Path to reach from 0 to N == Number of Path to reach from N to 0
 class Solution {
-    int climbStairs2(int n, vector<int>& dp) {
+    int climbStairs2(int n, vector<int>& dp) { // returns the number of path to reach from n to 0
         if(n == 0 || n == 1) return 1;
         if(dp[n] != -1) return dp[n];
 
 
-        int ways1 = climbStairs2(n - 1, dp);
-        int ways2 = climbStairs2(n - 2, dp);
+        int ways1 = climbStairs2(n - 1, dp); // returns the number of path to reach from n - 1 to 0
+        int ways2 = climbStairs2(n - 2, dp); // returns the number of path to reach from n - 2 to 0
 
         int totalWays = ways1 + ways2;
 
