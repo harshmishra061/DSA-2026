@@ -1,0 +1,13 @@
+class Solution {
+public:
+    int climbStairsVariableJumps(int n, vector<int>& arr) {
+        vector<int> dp(n + 1, 0); ways to reach nth step from ith step
+        dp[n] = 1; // ways to reach nth step from nth step
+        for(int i = n - 1;i >= 0;i--) {
+            for(int j = 1;j <= arr[i] && i + j < dp.size();j++) {
+                dp[i] += dp[i + j];
+            }
+        }
+        return dp[0];
+    }
+};
