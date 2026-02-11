@@ -1,0 +1,38 @@
+// Recursive
+class Solution {
+    vector<int> dp;
+    int coinChangePermutations2(vector<int>& coins, int target) {
+        if(target == 0) return 1;
+        if(dp[target] != -1) return dp[target];
+        int totPerm = 0;
+        for(int i = 0;i < coins.size();i++) {
+            if(target - coins[i] >= 0) {
+                totPerm += coinChangePermutations2(coins, target - coins[i]);
+            }
+        }
+        return dp[target] = totPerm;
+
+    }
+public:
+    int coinChangePermutations(vector<int>& coins, int target) {
+        dp.resize(target + 1, -1);
+        return coinChangePermutations2(coins, target); // return all the perm of target
+    }
+};
+
+// Tabulation
+class Solution {
+public:
+    int coinChangePermutations(vector<int>& coins, int target) {
+        vector<int> dp(target + 1); // stores all the perm of target
+        dp[0] = 1;
+        for(int i = 1;i <= target;i++) {
+            for(auto coin : coins) {
+                if(i >= coin) {
+                    dp[i] += dp[i - coin];
+                }
+            }
+        }
+        return dp[target];
+    }
+};
