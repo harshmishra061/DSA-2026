@@ -1,0 +1,18 @@
+class Solution {
+    vector<int> dp;
+    int countStrings2(long long int n) {
+        if(n == 0) return 1;
+        if(n == 1) return 2;
+        
+        if(dp[n] != -1) return dp[n];
+        
+        return dp[n] = (1LL * countStrings2(n - 1) + countStrings2(n - 2))%1000000007;
+    }
+  public:
+    int countStrings(long long int N) {
+        dp.resize(N + 1, -1);
+        return countStrings2(N);
+    }
+};
+
+// Can be solved in O(logn) using Matrix Exponentiation
