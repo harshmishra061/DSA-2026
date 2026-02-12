@@ -1,0 +1,73 @@
+// Recursive
+class Solution {
+    vector<vector<int>> dp;
+    int knapSack2(int idx, vector<int>& val, vector<int>& wt, int capacity) {
+        if(capacity == 0) return 0;
+        if(idx == -1) return 0;
+        
+        if(dp[idx][capacity] != -1) return dp[idx][capacity];
+        
+        int result = 0;
+        // take - (repetition allowed)
+        if(capacity >= wt[idx]) {
+            result = max(result, val[idx] + knapSack2(idx, val, wt, capacity - wt[idx]));
+        }
+        // not take
+        result = max(result, knapSack2(idx - 1, val, wt, capacity));
+        
+        return dp[idx][capacity] = result;
+    }
+  public:
+    int knapSack(vector<int>& val, vector<int>& wt, int capacity) {
+        dp.resize(val.size(), vector<int>(capacity + 1, -1));
+        return knapSack2(val.size() - 1, val, wt, capacity); // max value from arr 0 to n - 1
+        
+    }
+};
+
+// Tabulation - 2D
+class Solution {
+  public:
+    int knapSack(vector<int>& val, vector<int>& wt, int capacity) {
+        int n = val.size();
+        vector<vector<int>> dp(n + 1, vector<int>(capacity + 1));
+        
+        for(int i = 0;i < dp.size();i++) {
+            for(int j = 0;j < dp[0].size();j++) {
+                if(i == 0 || j == 0) {
+                    dp[i][j] = 0;
+                } else {
+                    dp[i][j] = dp[i - 1][j]; // not take ith item -> j cap will be forwarded to prev items
+                    if(j >= wt[i - 1]) {
+                        dp[i][j] = max(dp[i][j], val[i - 1] + dp[i][j - wt[i - 1]]);
+                    }
+                }
+            }
+        }
+        
+        return dp[n][capacity]; // max value generated from first n items with max_cap as capacity
+    }
+};
+
+// Tabulation - 1D
+class Solution {
+  public:
+    int knapSack(vector<int>& val, vector<int>& wt, int capacity) {
+        int n = val.size();
+        vector<int> dp(capacity + 1);
+        
+        for(int i = 0;i <= n;i++) {
+            for(int j = 0;j < dp.size();j++) {
+                if(i == 0 || j == 0) {
+                    dp[j] = 0;
+                } else {
+                    if(j >= wt[i - 1]) {
+                        dp[j] = max(dp[j], val[i - 1] + dp[j - wt[i - 1]]);
+                    }
+                }
+            }
+        }
+        
+        return dp[capacity]; // max value generated from first n items with max_cap as capacity
+    }
+};
