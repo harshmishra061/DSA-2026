@@ -1,0 +1,53 @@
+// Recursive
+class Solution {
+    vector<vector<int>> dp;
+    int solve2(int idx, int k, int cost[][100], int curr_house_color) {
+        if(idx == -1) return 0; 
+        
+        if(dp[idx][curr_house_color] != -1) return dp[idx][curr_house_color];
+
+        int result = INT_MAX;
+        for(int i = 0;i < k;i++) {
+            if(i == curr_house_color) continue;
+            result = min(result, cost[idx][curr_house_color] + solve2(idx - 1, k, cost, i));
+        }
+        return dp[idx][curr_house_color] = result;
+    }
+public:
+    int solve(int n, int k, int cost[][100]) {
+        dp.resize(n, vector<int>(k, -1));
+        int result = INT_MAX;
+        for(int i = 0;i < k;i++) {
+            result = min(result, solve2(n - 1, k, cost, i));
+        }
+        return result;
+    }
+};
+
+// Tabulation
+class Solution {
+public:
+    int solve(int n, int k, int cost[][100]) {
+        vector<vector<int>> dp(n, vector<int>(k, INT_MAX));
+
+        for(int y = 0;y < k;y++) { // cost of painting 0th house with yth color
+            dp[0][y] = cost[0][y];
+        }    
+
+        for(int x = 1;x < n;x++) { // xth house
+            for(int y = 0;y < k; y++) { // yth color
+                for(int z = 0;z < k;z++) {
+                    if(z == y) continue;
+                    dp[x][y] = min(dp[x][y], cost[x][y] + dp[x - 1][z]);
+                }
+            }
+        }
+
+        int ans = INT_MAX;
+        for(int y = 0;y < k;y++) {
+            ans = min(ans, dp[n - 1][y]);
+        }
+
+        return ans;
+    }
+};
