@@ -1,0 +1,42 @@
+// Recursive
+class Solution {
+    vector<vector<int>> dp;
+    int countWays2(int n, int& k, int curr_color_prev_used_count) {
+        if(curr_color_prev_used_count == 2) return 0;
+        if(n == 1) return 1;
+        if(dp[n][curr_color_prev_used_count] != -1) return dp[n][curr_color_prev_used_count];
+
+        int result = 0;
+        result += countWays2(n - 1, k, curr_color_prev_used_count + 1);
+        result += (k - 1) * countWays2(n - 1, k, 0);
+        
+        return dp[n][curr_color_prev_used_count] = result;
+        
+    }
+  public:
+    int countWays(int n, int k) {
+        dp.resize(n + 1, vector<int>(2, -1));
+        int result = 0;
+        result += k * countWays2(n, k, 0); // last item gets colored with color i with prev_same_color as 0
+        return result;
+    }
+};
+
+// Tabulation
+class Solution {
+  public:
+    int countWays(int n, int k) {
+        vector<vector<int>> dp(n + 1, vector<int>(2, -1));
+        dp[0][0] = 1;
+        dp[0][1] = 1;
+        
+        for(int i = 1;i < n;i++) {
+            dp[i][0] = dp[i - 1][1] + (k - 1) * dp[i - 1][0];
+            dp[i][1] = (k - 1) * dp[i - 1][0];
+        }
+        
+        int result = 0;
+        result += k * dp[n - 1][0]; // last item gets colored with color i with prev_same_color as 0
+        return result;
+    }
+};
