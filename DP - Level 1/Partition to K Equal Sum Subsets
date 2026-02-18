@@ -1,0 +1,34 @@
+// This is a recursion problem and not DP Problem
+class Solution {
+    long targetsum = 0;
+    bool canPartitionKSubsets2(int idx, int k, int curr_sum, int taken, vector<int>& nums) {
+        if(k == 0) return true;
+        if(idx == -1) {
+            if(curr_sum == targetsum) {
+                return canPartitionKSubsets2(nums.size() - 1, k - 1, 0, taken, nums);
+            }
+            return false;
+        }
+        
+        // take
+        if(!(taken & (1 << idx)) && curr_sum + nums[idx] <= targetsum) {
+            int newtaken = (taken | (1 << idx));
+            if(canPartitionKSubsets2(idx - 1, k, curr_sum + nums[idx], newtaken, nums)) return true;
+        }
+        // not take
+        return canPartitionKSubsets2(idx - 1, k, curr_sum, taken, nums);
+
+    }
+public:
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        targetsum = accumulate(nums.begin(), nums.end(), 0L);
+        if(targetsum % k != 0) return false;
+        targetsum = targetsum / k;
+
+        if(canPartitionKSubsets2(nums.size() - 1, k, 0, 0, nums)) return true;
+
+        return false;
+
+
+    }
+};
